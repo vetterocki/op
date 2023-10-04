@@ -1,0 +1,62 @@
+@startuml
+:Користувач: as User
+:Гість: as Guest
+Guest <|-- User
+
+usecase "Зареєструвати обліковий запис" as register
+usecase "Увійти в обліковий запис" as authenticate
+
+
+package "Дії з аудіодоріжкою" {
+    usecase "Обрати аудіодоріжку" as audio_choice
+    usecase "Додати аудіодоріжку " as several_audio
+    usecase "Видалити аудіодоріжку" as delete_audio
+    usecase "Змінити аудіодоріжку" as change_audio
+    usecase "Зберегти аудіодоріжку" as save_audio
+}
+
+package "Дії з сегментами" as segments {
+    usecase "Вибрати сегмент" as seg_choice
+    usecase "Копіювати сегмент" as copy
+    usecase "Вставити сегмент" as insert
+    usecase "Вирізати сегмент" as cut
+    usecase "Деформатувати сегмент" as deform
+}
+
+
+usecase "Створити робочий простір" as workspace
+usecase "Видалити робочий простір" as delete_ws
+usecase "Відкрити робочий простір" as open_ws
+
+usecase "Зберегти у форматі ogg" as ogg
+usecase "Зберегти у форматі flac" as flac
+usecase "Зберегти у форматі mp3" as mp3
+
+Guest -left-> register
+Guest -> authenticate
+User -- open_ws
+User -right--- delete_ws
+User -left--- workspace
+
+
+open_ws <.. audio_choice : <<include>>
+audio_choice <.. several_audio : <<include>>
+audio_choice <..-left- change_audio : <<include>>
+change_audio <.. save_audio : <<include>>
+audio_choice <.. delete_audio : <<include>>
+
+change_audio <.... seg_choice : <<include>>
+copy ..> seg_choice : <<include>>
+insert ..> seg_choice : <<include>>
+cut ..> seg_choice : <<include>>
+deform ..> seg_choice : <<include>>
+
+save_audio <... ogg : <<extends>>
+save_audio <... flac : <<extends>>
+save_audio <... mp3 : <<extends>>
+
+
+
+
+
+@enduml
